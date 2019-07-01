@@ -89,6 +89,7 @@ public class ArticleControllerTest extends BlogApiApplicationTests {
             BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outFile),
                     StandardCharsets.UTF_8));
             out.write("预期,输出");
+            out.newLine();
             Result result=articleController.listHotArticles();
             out.write(in.readLine()+","+result.getCode());
             out.flush();
@@ -110,6 +111,7 @@ public class ArticleControllerTest extends BlogApiApplicationTests {
             BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outFile),
                     StandardCharsets.UTF_8));
             out.write("预期,输出");
+            out.newLine();
             Result result=articleController.listNewArticles();
             out.write(in.readLine()+","+result.getCode());
             out.flush();
@@ -332,6 +334,7 @@ public class ArticleControllerTest extends BlogApiApplicationTests {
             BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outFile),
                     StandardCharsets.UTF_8));
             out.write("预期,输出");
+            out.newLine();
             Result result=articleController.listArchives();
             out.write(in.readLine()+","+result.getCode());
             out.flush();
