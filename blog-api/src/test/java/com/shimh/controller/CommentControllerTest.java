@@ -3,7 +3,7 @@ package com.shimh.controller;
 import com.shimh.BlogApiApplicationTests;
 import com.shimh.common.result.Result;
 import com.shimh.entity.Comment;
-import org.apache.tomcat.jni.Error;
+import com.shimh.entity.User;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
@@ -58,6 +58,7 @@ public class CommentControllerTest extends BlogApiApplicationTests {
         Integer id=9999999;
         Result result=commentController.getCommentById(id);
         System.out.println(result.getCode());
+        //todo
     }
 
     /**
@@ -69,8 +70,9 @@ public class CommentControllerTest extends BlogApiApplicationTests {
     public void getCommentByIdLegit(){
         Integer id=53;
         Result result=commentController.getCommentById(id);
-        Comment comment=(Comment)result.getData();
+        Comment comment=(Comment)(result.getData());
         System.out.println(comment.getContent());
+        //todo
     }
 
     /**
@@ -95,6 +97,7 @@ public class CommentControllerTest extends BlogApiApplicationTests {
         Integer id=9999;
         Result result=commentController.listCommentsByArticle(id);
         System.out.println(result.getCode());
+        //todo
     }
 
     /**
@@ -104,25 +107,142 @@ public class CommentControllerTest extends BlogApiApplicationTests {
      */
     @Test
     public void listCommentsByArticleLegit() {
+        Integer id=10;
+        Result result=commentController.listCommentsByArticle(id);
+        List<Comment> list = (List<Comment>) result.getData();
+        for (Comment elem : list) {
+            System.out.println(elem.getContent());
+        }
+    }
+
+//    @Rollback
+//    @Transactional
+//    @Test
+//    public void saveComment() {
+//    }
+//
+//    @Rollback
+//    @Transactional
+//    @Test
+//    public void deleteCommentById() {
+//    }
+
+
+    /**
+     * 保存评论
+     * 根据正交法，4个测试用例，分别考察3个变量：Author，Level,Parent
+     */
+    @Rollback
+    @Transactional
+    @Test
+    public void saveCommentAndChangeCountsA() {
+        User user=new User();
+        user.setAccount("diver27");
+        Comment parent=new Comment();
+        parent.setId(55);
+
+        Comment comment=new Comment();
+
+        comment.setContent("测试");
+        comment.setAuthor(user);
+        comment.setLevel("2");
+        comment.setParent(parent);
+
+        commentController.saveCommentAndChangeCounts(comment);
     }
 
     @Rollback
     @Transactional
     @Test
-    public void saveComment() {
+    public void saveCommentAndChangeCountsB() {
+        User user=new User();
+        user.setAccount("diver27");
+
+        Comment comment=new Comment();
+
+        comment.setContent("测试");
+        comment.setAuthor(user);
+        comment.setLevel("3");
+
+        commentController.saveCommentAndChangeCounts(comment);
     }
 
     @Rollback
     @Transactional
     @Test
-    public void deleteCommentById() {
+    public void saveCommentAndChangeCountsC() {
+        User user=new User();
+        user.setAccount("Non-existent");
+
+        Comment comment=new Comment();
+
+        comment.setContent("测试");
+        comment.setAuthor(user);
+        comment.setLevel("2");
+
+        commentController.saveCommentAndChangeCounts(comment);
+
     }
 
+    @Rollback
+    @Transactional
     @Test
-    public void saveCommentAndChangeCounts() {
+    public void saveCommentAndChangeCountsD() {
+        User user=new User();
+        user.setAccount("diver27");
+        Comment parent=new Comment();
+        parent.setId(55);
+
+        Comment comment=new Comment();
+
+        comment.setContent("测试");
+        comment.setAuthor(user);
+        comment.setLevel("3");
+        comment.setParent(parent);
+
+        commentController.saveCommentAndChangeCounts(comment);
     }
 
+
+    /**
+     * 删除评论
+     * 输入：评论id为空
+     * 期望：错误代码1002
+     */
+    @Rollback
+    @Transactional
+    @Test
+    public void deleteCommentByIdAndChangeCountsEmpty() {
+        Integer id=null;
+        Result result=commentController.deleteCommentByIdAndChangeCounts(id);
+        System.out.println(result.getCode());
+    }
+
+    /**
+     * 删除评论
+     * 输入：评论id不存在
+     * 期望：错误代码
+     */
+    @Rollback
+    @Transactional
+    @Test
+    public void deleteCommentByIdAndChangeCountsNonExist() {
+        Integer id=9999;
+        Result result=commentController.deleteCommentByIdAndChangeCounts(id);
+        System.out.println(result.getCode());
+    }
+
+    /**
+     * 删除评论
+     * 输入：有效评论id
+     * 期望：成功代码
+     */
+    @Rollback
+    @Transactional
     @Test
     public void deleteCommentByIdAndChangeCounts() {
+        Integer id=55;
+        Result result=commentController.deleteCommentByIdAndChangeCounts(id);
+        System.out.println(result.getCode());
     }
 }
