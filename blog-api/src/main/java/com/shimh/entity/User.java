@@ -9,7 +9,10 @@ import javax.persistence.Enumerated;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 
+import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -34,14 +37,16 @@ public class User extends BaseEntity<Long> {
 
 
     @NotBlank
-    @Column(name = "account", unique = true, length = 10)
+    @Size(max = 10,min = 1)
+    @Column(name = "account", unique = true)
     private String account;
 
     /**
      * 使用md5(username + original password + salt)加密存储
      */
     @NotBlank
-    @Column(name = "password", length = 64)
+    @Size(max = 64,min = 1)
+    @Column(name = "password")
     private String password;
 
     /**
@@ -49,13 +54,18 @@ public class User extends BaseEntity<Long> {
      */
     private String avatar;
 
-    @Column(name = "email", unique = true, length = 20)
+    @Email
+    @Column(name = "email", unique = true)
+    @Size(max = 20)
     private String email;  // 邮箱
 
     @NotBlank
-    @Column(name = "nickname", length = 10)
+    @Size(min = 1,max = 10)
+    @Column(name = "nickname")
     private String nickname;
 
+    @Size(max = 20)
+    @Pattern(regexp = "^[0-9]*$")
     @Column(name = "mobile_phone_number", length = 20)
     private String mobilePhoneNumber;
 
