@@ -1,0 +1,14 @@
+,aa,aa@nn.com,26245,hhh,10002
+mhiwy,aa,aa@nn.com,26245,hhh,20005
+ttttttttttt,aa,aa@nn.com,26245,hhh,10001
+hello,,aa@nn.com,26245,hhh,10001
+hello,aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa,aa@nn.com,26245,hhh,10001
+hello,world,fwogowgowgvogowbvgowjvowgguo@ww.com,26245,hhh,10001
+hello,world,fbiwow,26245,hhh,10001
+hello,world,hhhhh@qq.com,2624574252594,hhh,10001
+hello,world,hhhhh@qq.com,fjaj78,hhh,10001
+hello,world,hhhhh@qq.com,15801736266,,10002
+hello,world,hhhhh@qq.com,15801736266,hhhvowgowgowwg,10001
+hello,world,hhhhh@qq.com,15801736266,software,0
+hello,world,,15801736266,software,0
+hello,world,hhhhh@qq.com,,software,0

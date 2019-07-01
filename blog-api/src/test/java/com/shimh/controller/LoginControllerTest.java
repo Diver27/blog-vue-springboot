@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ResourceUtils;
 import org.springframework.web.context.WebApplicationContext;
 
@@ -69,18 +70,33 @@ public class LoginControllerTest extends BlogApiApplicationTests {
 
   @Test
   @Rollback
+  @Transactional
   public void registerTest() {
-    try {
-      User u = new User();
-      u.setAccount("shimh9");
-      u.setNickname("hhh");
-      u.setPassword("123456");
-      u.setAdmin(false);
-      u.setCreateDate(new Date());
-      u.setEmail("91948514@qq.com");
-      u.setMobilePhoneNumber("1839616462");
-      u.setStatus(UserStatus.normal);
-      loginController.register(u);
+    User user = new User();
+    try{
+      File inputFile = ResourceUtils.getFile("classpath:unitTest/LoginControllerTest/registerTest.txt");
+      File outFile = ResourceUtils.getFile("classpath:unitTest/LoginControllerTest/registerTestRes.txt");
+      BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(inputFile),
+              StandardCharsets.UTF_8));
+      BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outFile),
+              StandardCharsets.UTF_8));
+      String lineTxt = null;
+      out.write("账号,密码,邮箱,手机号,用户名,预期,输出");
+      out.newLine();
+      while ((lineTxt = in.readLine()) != null) {//数据以逗号分隔
+        String[] names = lineTxt.split(",");
+        user.setAccount(names[0]);
+        user.setPassword(names[1]);
+        user.setEmail(names[2]);
+        user.setMobilePhoneNumber(names[3]);
+        user.setNickname(names[4]);
+        Result result=loginController.register(user);
+        out.write(lineTxt+","+result.getCode());
+        out.newLine();
+      }
+      out.flush();
+      out.close();
+      in.close();
     }
     catch (Exception e){
       System.out.println("测试失败");

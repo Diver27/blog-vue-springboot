@@ -63,13 +63,19 @@ public class LoginController {
         String account = user.getAccount();
         String password = user.getPassword();
 
-        Long userId = userService.saveUser(user);
-
-        if (userId > 0) {
-            executeLogin(account, password, r);
-        } else {
-            r.setResultCode(ResultCode.USER_Register_ERROR);
+        try {
+            Long userId = userService.saveUser(user);
+            if (userId > 0) {
+                executeLogin(account, password, r);
+            } else {
+                r.setResultCode(ResultCode.USER_Register_ERROR);
+            }
         }
+        catch (Exception e){
+            r.setResultCode(ResultCode.PARAM_IS_INVALID);
+        }
+
+
         return r;
     }
 
