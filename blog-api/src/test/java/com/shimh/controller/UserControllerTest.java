@@ -3,6 +3,7 @@ package com.shimh.controller;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.shiro.SecurityUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,18 +22,20 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;  
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-public class UserControllerTest extends BlogApiApplicationTests{
-	
-	
-    private MockMvc mockMvc; // 模拟MVC对象，通过MockMvcBuilders.webAppContextSetup(this.wac).build()初始化。    
-    
-    @Autowired    
-    private WebApplicationContext wac; // 注入WebApplicationContext    
-    
-    @Before
-    public void setup() {    
-        this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();    
-    } 
+public class UserControllerTest extends BlogApiApplicationTests {
+
+
+	@Autowired
+	private WebApplicationContext wac; // 注入WebApplicationContext
+	private MockMvc mockMvc; // 模拟MVC对象，通过MockMvcBuilders.webAppContextSetup(this.wac).build()初始化。
+	@Autowired
+	private SecurityManager securityManager;
+
+	@Before
+	public void setup() {
+		this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();
+		SecurityUtils.setSecurityManager(securityManager);
+	}
 	
 	@Test
 	public void saveUserTest() throws Exception {
