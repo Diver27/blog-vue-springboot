@@ -37,23 +37,23 @@ public class UserControllerTest extends BlogApiApplicationTests {
 
   @Test
   public void saveUserTest() throws Exception {
-//    User u = new User();
-//    u.setAccount("shimh");
-//    u.setNickname("史明辉");
-//    u.setPassword("123456");
-//    u.setAdmin(true);
-//    u.setCreateDate(new Date());
-//    u.setEmail("919431514@qq.com");
-//    u.setMobilePhoneNumber("18396816462");
-//    u.setStatus(UserStatus.normal);
-//    loginController.register(u);
-//
-//    MvcResult result = mockMvc.perform(post("/users/create").contentType(MediaType.APPLICATION_JSON).content(JSONObject.toJSONString(u)))
-//            .andExpect(status().isOk())// 模拟向testRest发送get请求
-//            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))// 预期返回值的媒体类型text/plain;charset=UTF-8
-//            .andReturn();// 返回执行请求的结果
-//
-//    System.out.println(result.getResponse().getContentAsString());
+    User u = new User();
+    u.setAccount("shimh");
+    u.setNickname("史明辉");
+    u.setPassword("123456");
+    u.setAdmin(true);
+    u.setCreateDate(new Date());
+    u.setEmail("91943114@qq.com");
+    u.setMobilePhoneNumber("18396816462");
+    u.setStatus(UserStatus.normal);
+    loginController.register(u);
+
+    MvcResult result = mockMvc.perform(post("/users/create").contentType(MediaType.APPLICATION_JSON).content(JSONObject.toJSONString(u)))
+            .andExpect(status().isOk())// 模拟向testRest发送get请求
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))// 预期返回值的媒体类型text/plain;charset=UTF-8
+            .andReturn();// 返回执行请求的结果
+
+    System.out.println(result.getResponse().getContentAsString());
 
 
   }
