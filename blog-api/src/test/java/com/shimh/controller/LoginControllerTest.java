@@ -24,6 +24,7 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -63,8 +64,9 @@ public class LoginControllerTest extends BlogApiApplicationTests {
         String[] names = lineTxt.split(",");
         user.setAccount(names[0]);
         user.setPassword(names[1]);
-        Result result=loginController.login(user);
-        out.write(lineTxt+","+result.getCode());
+        MvcResult result=mockMvc.perform(post("/login").contentType(MediaType.APPLICATION_JSON).content(JSONObject.toJSONString(user))).andReturn();
+        JSONObject r=JSON.parseObject(result.getResponse().getContentAsString());
+        out.write(lineTxt+","+r.getString("code"));
         out.newLine();
         }
       out.flush();
@@ -121,11 +123,32 @@ public class LoginControllerTest extends BlogApiApplicationTests {
 
   @Test
   public void handleLoginTest() {
-
+    try {
+      MvcResult result=mockMvc.perform(get("/handleLogin")).andReturn();
+      JSONObject r=JSON.parseObject(result.getResponse().getContentAsString());
+      System.out.println("第一次返回结果为:"+r.getString("code"));
+      User user=new User();
+      user.setAccount("twhello");
+      user.setPassword("1914");
+      mockMvc.perform(post("/login").contentType(MediaType.APPLICATION_JSON).content(JSONObject.toJSONString(user))).andReturn();
+      result=mockMvc.perform(get("/handleLogin")).andReturn();
+      r=JSON.parseObject(result.getResponse().getContentAsString());
+      System.out.println("第二次返回结果为:"+r.getString("code"));
+    }
+    catch (Exception e){
+      System.out.println("测试失败");
+    }
   }
 
   @Test
   public void logoutTest() {
-
+    try {
+      MvcResult result = mockMvc.perform(get("/logout")).andReturn();
+      JSONObject r = JSON.parseObject(result.getResponse().getContentAsString());
+      System.out.println("返回结果为:" + r.getString("code"));
+    }
+    catch (Exception e){
+      System.out.println("测试失败");
+    }
   }
 }

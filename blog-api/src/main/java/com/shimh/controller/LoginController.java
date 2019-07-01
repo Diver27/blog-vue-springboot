@@ -112,7 +112,6 @@ public class LoginController {
   @GetMapping("/logout")
   @LogAnnotation(module = "退出", operation = "退出")
   public Result logout() {
-
     Result r = new Result();
     Subject subject = SecurityUtils.getSubject();
     subject.logout();
