@@ -1,5 +1,6 @@
 package com.shimh.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.shimh.BlogApiApplicationTests;
 import com.shimh.common.result.Result;
@@ -25,13 +26,11 @@ import org.springframework.web.context.WebApplicationContext;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
+import java.util.*;
 
 import static java.lang.Integer.parseInt;
 import static org.junit.Assert.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -74,8 +73,10 @@ public class ArticleControllerTest extends BlogApiApplicationTests {
                 pageVo.setPageSize(parseInt(names[1]));
                 pageVo.setName(names[2]);
                 pageVo.setSort(names[3]);
-                Result result=articleController.listArticles(pageVo);
-                out.write(lineTxt+","+result.getCode());
+                MvcResult result = mockMvc.perform(get("/articles/").contentType(MediaType.APPLICATION_JSON).content(JSONObject.toJSONString(pageVo)))
+                        .andReturn();// 返回执行请求的结果
+                JSONObject r= JSON.parseObject(result.getResponse().getContentAsString());
+                out.write(lineTxt+","+r.getString("data"));
                 out.newLine();
             }
             out.flush();
@@ -145,8 +146,10 @@ public class ArticleControllerTest extends BlogApiApplicationTests {
             out.newLine();
             while ((lineTxt = in.readLine()) != null) {//数据以逗号分隔
                 String[] names = lineTxt.split(",");
-                Result result=articleController.getArticleById(parseInt(names[0]));
-                out.write(lineTxt+","+result.getCode());
+                MvcResult result = mockMvc.perform(get("/articles/"+names[0]).contentType(MediaType.APPLICATION_JSON).content(JSONObject.toJSONString(names[0])))
+                        .andReturn();// 返回执行请求的结果
+                JSONObject r= JSON.parseObject(result.getResponse().getContentAsString());
+                out.write(lineTxt+","+r.getString("code"));
                 out.newLine();
             }
             out.flush();
@@ -172,8 +175,10 @@ public class ArticleControllerTest extends BlogApiApplicationTests {
             out.newLine();
             while ((lineTxt = in.readLine()) != null) {//数据以逗号分隔
                 String[] names = lineTxt.split(",");
-                Result result = articleController.listArticlesByTag(parseInt(names[0]));
-                out.write(lineTxt + "," + result.getCode());
+                MvcResult result = mockMvc.perform(get("/articles/tag/"+names[0]).contentType(MediaType.APPLICATION_JSON).content(JSONObject.toJSONString(names[0])))
+                        .andReturn();// 返回执行请求的结果
+                JSONObject r= JSON.parseObject(result.getResponse().getContentAsString());
+                out.write(lineTxt+","+r.getString("data"));
                 out.newLine();
             }
             out.flush();
@@ -199,8 +204,10 @@ public class ArticleControllerTest extends BlogApiApplicationTests {
             out.newLine();
             while ((lineTxt = in.readLine()) != null) {//数据以逗号分隔
                 String[] names = lineTxt.split(",");
-                Result result=articleController.listArticlesByCategory(parseInt(names[0]));
-                out.write(lineTxt+","+result.getCode());
+                MvcResult result = mockMvc.perform(get("/articles/category/"+names[0]).contentType(MediaType.APPLICATION_JSON).content(JSONObject.toJSONString(names[0])))
+                        .andReturn();// 返回执行请求的结果
+                JSONObject r= JSON.parseObject(result.getResponse().getContentAsString());
+                out.write(lineTxt+","+r.getString("code"));
                 out.newLine();
             }
             out.flush();
@@ -217,12 +224,28 @@ public class ArticleControllerTest extends BlogApiApplicationTests {
      * 保存文章
      * 根据正交法，12个测试用例，分别考察6个变量：是否登录 t/f，是否有title t/f,是否有body t/f，
      * 是否有summary t/f, 是否选了tag t/f， 是否选了category t/f
-
+*/
     @Rollback
     @Transactional
     @Test
     public void saveArticle() {
-        Article article = new Article();
+        User user=new User();
+        user.setAccount("diver28");
+        user.setPassword("1234");
+
+        ArticleBody body=new ArticleBody();
+        body.setContent("test");
+
+        String content="test";
+
+        Tag tag=new Tag();
+        tag.setId(1);
+        List<Tag> tags=new ArrayList<>();
+        tags.add(tag);
+
+        Category category=new Category();
+        category.setId(1);
+
         try{
             File inputFile = ResourceUtils.getFile("classpath:unitTest/ArticleControllerTest/saveArticleTest.txt");
             File outFile = ResourceUtils.getFile("classpath:unitTest/ArticleControllerTest/saveArticleTestRes.txt");
@@ -231,186 +254,58 @@ public class ArticleControllerTest extends BlogApiApplicationTests {
             BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outFile),
                     StandardCharsets.UTF_8));
 
-            User user=new User();
-            user.setAccount("diver28");
-            user.setPassword("1234");
-
-            ArticleBody body=new ArticleBody();
-            body.setContent("test");
-
-            List<Tag> tags=new List<Tag>() {
-                @Override
-                public int size() {
-                    return 0;
-                }
-
-                @Override
-                public boolean isEmpty() {
-                    return false;
-                }
-
-                @Override
-                public boolean contains(Object o) {
-                    return false;
-                }
-
-                @Override
-                public Iterator<Tag> iterator() {
-                    return null;
-                }
-
-                @Override
-                public Object[] toArray() {
-                    return new Object[0];
-                }
-
-                @Override
-                public <T> T[] toArray(T[] a) {
-                    return null;
-                }
-
-                @Override
-                public boolean add(Tag tag) {
-                    return false;
-                }
-
-                @Override
-                public boolean remove(Object o) {
-                    return false;
-                }
-
-                @Override
-                public boolean containsAll(Collection<?> c) {
-                    return false;
-                }
-
-                @Override
-                public boolean addAll(Collection<? extends Tag> c) {
-                    return false;
-                }
-
-                @Override
-                public boolean addAll(int index, Collection<? extends Tag> c) {
-                    return false;
-                }
-
-                @Override
-                public boolean removeAll(Collection<?> c) {
-                    return false;
-                }
-
-                @Override
-                public boolean retainAll(Collection<?> c) {
-                    return false;
-                }
-
-                @Override
-                public void clear() {
-
-                }
-
-                @Override
-                public Tag get(int index) {
-                    return null;
-                }
-
-                @Override
-                public Tag set(int index, Tag element) {
-                    return null;
-                }
-
-                @Override
-                public void add(int index, Tag element) {
-
-                }
-
-                @Override
-                public Tag remove(int index) {
-                    return null;
-                }
-
-                @Override
-                public int indexOf(Object o) {
-                    return 0;
-                }
-
-                @Override
-                public int lastIndexOf(Object o) {
-                    return 0;
-                }
-
-                @Override
-                public ListIterator<Tag> listIterator() {
-                    return null;
-                }
-
-                @Override
-                public ListIterator<Tag> listIterator(int index) {
-                    return null;
-                }
-
-                @Override
-                public List<Tag> subList(int fromIndex, int toIndex) {
-                    return null;
-                }
-            };
-
-            Category category=new Category();
-            category.setId(1);
-
             String lineTxt = null;
             out.write("登录,标题,内容,简介,标签,分类,预期,输出");
             out.newLine();
             while ((lineTxt = in.readLine()) != null) {//数据以逗号分隔
+                Article article = new Article();
                 String[] names = lineTxt.split(",");
-                if(names[0].equals('t')){
+                if(names[0].equals("t")){
                     loginController.login(user);
                     article.setAuthor(user);
                 }
-                else if(names[0].equals('f')){
-                    article.setAuthor(null);
+                if(names[1].equals("t")){
+                    article.setTitle(content);
                 }
-                if(names[1].equals('t')){
-                    article.setTitle("test");
-                }
-                else if(names[1].equals('f')){
+                else if(names[1].equals("f")){
                     article.setTitle(null);
                 }
-                if(names[2].equals('t')){
+                if(names[2].equals("t")){
                     article.setBody(body);
                 }
-                else if(names[2].equals('f')){
+                else if(names[2].equals("f")){
                     article.setBody(null);
                 }
-                if(names[3].equals('t')){
-                    article.setSummary("test");
+                if(names[3].equals("t")){
+                    article.setSummary(content);
                 }
-                else if(names[3].equals('f')){
+                else if(names[3].equals("f")){
                     article.setSummary(null);
                 }
-                if(names[4].equals('t')){
+                if(names[4].equals("t")){
                     article.setTags(tags);
                 }
-                else if(names[4].equals('f')){
+                else if(names[4].equals("f")){
                     article.setTags(null);
                 }
-                if(names[5].equals('t')){
+                if(names[5].equals("t")){
                     article.setCategory(category);
                 }
-                else if(names[5].equals('f')){
+                else if(names[5].equals("f")){
                     article.setCategory(null);
                 }
                 try {
                     MvcResult result = mockMvc.perform(post("/articles/publish").contentType(MediaType.APPLICATION_JSON).content(JSONObject.toJSONString(article)))
-                            .andExpect(status().isOk())
                             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
                             .andReturn();
-                    out.write(lineTxt + "," + result.getResponse().getContentAsString());
+                    JSONObject r= JSON.parseObject(result.getResponse().getContentAsString());
+                    out.write(lineTxt + "," + r.getString("code"));
                     out.newLine();
                 }
                 catch (Exception e) {
                     e.printStackTrace();
                 }
+                loginController.logout();
             }
             out.flush();
             out.close();
@@ -420,44 +315,7 @@ public class ArticleControllerTest extends BlogApiApplicationTests {
             System.out.println("测试失败");
         }
     }
-    */
 
-/**
- * 修改文章
-
-    @Test
-    public void updateArticle() {
-        ArticleVo article = new ArticleVo();
-        try{
-            File inputFile = ResourceUtils.getFile("classpath:unitTest/ArticleControllerTest/updateArticleTest.txt");
-            File outFile = ResourceUtils.getFile("classpath:unitTest/ArticleControllerTest/updateArticleTestRes.txt");
-            BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(inputFile),
-                    StandardCharsets.UTF_8));
-            BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outFile),
-                    StandardCharsets.UTF_8));
-            String lineTxt = null;
-            out.write("年,月,标签id,分类id,浏览量,预期,输出");
-            out.newLine();
-            while ((lineTxt = in.readLine()) != null) {//数据以逗号分隔
-                String[] names = lineTxt.split(",");
-                article.setYear(parseInt(names[0]));
-                article.setMonth(parseInt(names[1]));
-                article.setTagId(parseInt(names[2]));
-                article.setCategoryId(parseInt(names[3]));
-                article.setCount(parseInt(names[4]));
-                Result result=articleController.updateArticle(article);
-                out.write(lineTxt+","+result.getCode());
-                out.newLine();
-            }
-            out.flush();
-            out.close();
-            in.close();
-        }
-        catch (Exception e){
-            System.out.println("测试失败");
-        }
-    }
- */
 
     @Test
     public void deleteArticleById() {
@@ -473,8 +331,10 @@ public class ArticleControllerTest extends BlogApiApplicationTests {
             out.newLine();
             while ((lineTxt = in.readLine()) != null) {//数据以逗号分隔
                 String[] names = lineTxt.split(",");
-                Result result=articleController.deleteArticleById(parseInt(names[0]));
-                out.write(lineTxt+","+result.getCode());
+                MvcResult result = mockMvc.perform(get("/articles/delete/"+names[0]).contentType(MediaType.APPLICATION_JSON).content(JSONObject.toJSONString(names[0])))
+                        .andReturn();// 返回执行请求的结果
+                JSONObject r= JSON.parseObject(result.getResponse().getContentAsString());
+                out.write(lineTxt+","+r.getString("data"));
                 out.newLine();
             }
             out.flush();
