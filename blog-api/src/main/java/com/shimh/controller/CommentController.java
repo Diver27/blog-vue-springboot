@@ -62,7 +62,12 @@ public class CommentController {
         }
 
         Comment comment = commentService.getCommentById(id);
-
+        try {
+            comment.getContent();
+        }catch(Exception e){
+            r.setResultCode(ResultCode.PARAM_IS_INVALID);
+            return r;
+        }
         r.setResultCode(ResultCode.SUCCESS);
         r.setData(comment);
         return r;
@@ -148,7 +153,12 @@ public class CommentController {
             return r;
         }
 
-        commentService.deleteCommentByIdAndChangeCounts(id);
+        try {
+            commentService.deleteCommentByIdAndChangeCounts(id);
+        }catch(Exception e){
+            r.setResultCode(ResultCode.PARAM_IS_INVALID);
+            return r;
+        }
 
         r.setResultCode(ResultCode.SUCCESS);
         return r;
