@@ -67,26 +67,35 @@ public class CommentControllerTest extends BlogApiApplicationTests {
     /**
      * 获取一条评论
      * 输入：id为null
-     * 期望：返回错误代码1002 “参数为空”
+     * 期望：返回错误代码10002 “参数为空”
      */
     @Test
-    public void getCommentByIdEmpty() {
+    public void getCommentByIdEmpty() throws Exception {
         Integer id=null;
         Result result=commentController.getCommentById(id);
-        System.out.println(result.getCode());
+        if(result.getCode()==10002) {
+            System.out.println(result.getCode());
+        }else{
+            System.out.println(result.getCode());
+            throw new Exception("没有返回10002代码");
+        }
     }
 
     /**
      * 获取评论
      * 输入：id在表中不存在
-     * 期望：返回错误代码
+     * 期望：返回错误代码10001
      */
     @Test
-    public void getCommentByIdNonExist(){
+    public void getCommentByIdNonExist() throws Exception{
         Integer id=9999999;
         Result result=commentController.getCommentById(id);
-        System.out.println(result.getCode());
-        //todo
+        if(result.getCode()==10001) {
+            System.out.println(result.getCode());
+        }else{
+            System.out.println(result.getCode());
+            throw new Exception("没有返回10001代码");
+        }
     }
 
     /**
@@ -115,13 +124,17 @@ public class CommentControllerTest extends BlogApiApplicationTests {
     /**
      * 获取文章评论
      * 输入：id为null
-     * 期望：返回错误代码1002
+     * 期望：返回错误代码10002
      */
     @Test
-    public void listCommentsByArticleEmpty() {
+    public void listCommentsByArticleEmpty() throws Exception {
         Integer id=null;
         Result result=commentController.listCommentsByArticle(id);
-        System.out.println(result.getCode());
+        if(result.getCode()==10002) {
+            System.out.println(result.getCode());
+        }else{
+            throw new Exception("未返回错误代码");
+        }
     }
 
     /**
@@ -264,7 +277,7 @@ public class CommentControllerTest extends BlogApiApplicationTests {
                     .andReturn();
             System.out.println(result.getResponse().getContentAsString());
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println("未登录，无法保存");
         }
 
     }
@@ -307,12 +320,12 @@ public class CommentControllerTest extends BlogApiApplicationTests {
     /**
      * 删除评论
      * 输入：评论id为空
-     * 期望：错误代码1002
+     * 期望：错误代码10002
      */
     @Rollback
     @Transactional
     @Test
-    public void deleteCommentByIdAndChangeCountsEmpty() {
+    public void deleteCommentByIdAndChangeCountsEmpty() throws Exception {
         User user=new User();
         user.setAccount("diver28");
         user.setPassword("1234");
@@ -320,18 +333,22 @@ public class CommentControllerTest extends BlogApiApplicationTests {
 
         Integer id=null;
         Result result=commentController.deleteCommentByIdAndChangeCounts(id);
-        System.out.println(result.getCode());
+        if(result.getCode()==10002) {
+            System.out.println(result.getCode());
+        }else{
+            throw new Exception("未返回错误代码");
+        }
     }
 
     /**
      * 删除评论
      * 输入：评论id不存在
-     * 期望：错误代码
+     * 期望：错误代码10001
      */
     @Rollback
     @Transactional
     @Test
-    public void deleteCommentByIdAndChangeCountsNonExist() {
+    public void deleteCommentByIdAndChangeCountsNonExist() throws Exception {
         User user=new User();
         user.setAccount("diver28");
         user.setPassword("1234");
@@ -339,7 +356,11 @@ public class CommentControllerTest extends BlogApiApplicationTests {
 
         Integer id=9999;
         Result result=commentController.deleteCommentByIdAndChangeCounts(id);
-        System.out.println(result.getCode());
+        if(result.getCode()==10001) {
+            System.out.println(result.getCode());
+        }else{
+            throw new Exception("未返回错误代码");
+        }
     }
 
     /**
