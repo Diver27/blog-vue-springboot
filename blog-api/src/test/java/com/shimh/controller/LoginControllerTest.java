@@ -117,11 +117,6 @@ public class LoginControllerTest extends BlogApiApplicationTests {
   }
 
   @Test
-  public void executeLoginTest() {
-
-  }
-
-  @Test
   public void handleLoginTest() {
     try {
       MvcResult result=mockMvc.perform(get("/handleLogin")).andReturn();
