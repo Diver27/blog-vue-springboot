@@ -24,6 +24,7 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -53,18 +54,19 @@ public class LoginControllerTest extends BlogApiApplicationTests {
       File inputFile = ResourceUtils.getFile("classpath:unitTest/LoginControllerTest/loginTest.csv");
       File outFile = ResourceUtils.getFile("classpath:unitTest/LoginControllerTest/loginTestRes.csv");
       BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(inputFile),
-              StandardCharsets.UTF_8));
+              "GBK"));
       BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outFile),
-              StandardCharsets.UTF_8));
-      String lineTxt = null;
+              "GBK"));
+      String lineTxt;
       out.write("账号,密码,预期,输出");
       out.newLine();
       while ((lineTxt = in.readLine()) != null) {//数据以逗号分隔
         String[] names = lineTxt.split(",");
         user.setAccount(names[0]);
         user.setPassword(names[1]);
-        Result result=loginController.login(user);
-        out.write(lineTxt+","+result.getCode());
+        MvcResult result=mockMvc.perform(post("/login").contentType(MediaType.APPLICATION_JSON).content(JSONObject.toJSONString(user))).andReturn();
+        JSONObject r=JSON.parseObject(result.getResponse().getContentAsString());
+        out.write(lineTxt+","+r.getString("code"));
         out.newLine();
         }
       out.flush();
@@ -84,10 +86,10 @@ public class LoginControllerTest extends BlogApiApplicationTests {
       File inputFile = ResourceUtils.getFile("classpath:unitTest/LoginControllerTest/registerTest.csv");
       File outFile = ResourceUtils.getFile("classpath:unitTest/LoginControllerTest/registerTestRes.csv");
       BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(inputFile),
-              StandardCharsets.UTF_8));
+              "GBK"));
       BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outFile),
-              StandardCharsets.UTF_8));
-      String lineTxt = null;
+              "GBK"));
+      String lineTxt;
       out.write("账号,密码,邮箱,手机号,用户名,预期,输出");
       out.newLine();
       while ((lineTxt = in.readLine()) != null) {//数据以逗号分隔
@@ -115,17 +117,33 @@ public class LoginControllerTest extends BlogApiApplicationTests {
   }
 
   @Test
-  public void executeLoginTest() {
-
-  }
-
-  @Test
   public void handleLoginTest() {
-
+    try {
+      MvcResult result=mockMvc.perform(get("/handleLogin")).andReturn();
+      JSONObject r=JSON.parseObject(result.getResponse().getContentAsString());
+      System.out.println("第一次返回结果为:"+r.getString("code"));
+      User user=new User();
+      user.setAccount("twhello");
+      user.setPassword("1914");
+      mockMvc.perform(post("/login").contentType(MediaType.APPLICATION_JSON).content(JSONObject.toJSONString(user))).andReturn();
+      result=mockMvc.perform(get("/handleLogin")).andReturn();
+      r=JSON.parseObject(result.getResponse().getContentAsString());
+      System.out.println("第二次返回结果为:"+r.getString("code"));
+    }
+    catch (Exception e){
+      System.out.println("测试失败");
+    }
   }
 
   @Test
   public void logoutTest() {
-
+    try {
+      MvcResult result = mockMvc.perform(get("/logout")).andReturn();
+      JSONObject r = JSON.parseObject(result.getResponse().getContentAsString());
+      System.out.println("返回结果为:" + r.getString("code"));
+    }
+    catch (Exception e){
+      System.out.println("测试失败");
+    }
   }
 }

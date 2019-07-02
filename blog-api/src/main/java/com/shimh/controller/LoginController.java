@@ -45,7 +45,12 @@ public class LoginController {
   @LogAnnotation(module = "登录", operation = "登录")
   public Result login(@RequestBody User user) {
     Result r = new Result();
-    executeLogin(user.getAccount(), user.getPassword(), r);
+    if (user.getAccount().equals("")||user.getPassword().equals("")||user.getAccount().length()>10||user.getPassword().length()>64){
+      r.setResultCode(ResultCode.PARAM_IS_INVALID);
+    }
+    else {
+      executeLogin(user.getAccount(), user.getPassword(), r);
+    }
     return r;
   }
 
@@ -112,7 +117,6 @@ public class LoginController {
   @GetMapping("/logout")
   @LogAnnotation(module = "退出", operation = "退出")
   public Result logout() {
-
     Result r = new Result();
     Subject subject = SecurityUtils.getSubject();
     subject.logout();
