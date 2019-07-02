@@ -54,10 +54,10 @@ public class LoginControllerTest extends BlogApiApplicationTests {
       File inputFile = ResourceUtils.getFile("classpath:unitTest/LoginControllerTest/loginTest.csv");
       File outFile = ResourceUtils.getFile("classpath:unitTest/LoginControllerTest/loginTestRes.csv");
       BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(inputFile),
-              StandardCharsets.UTF_8));
+              "GBK"));
       BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outFile),
-              StandardCharsets.UTF_8));
-      String lineTxt = null;
+              "GBK"));
+      String lineTxt;
       out.write("账号,密码,预期,输出");
       out.newLine();
       while ((lineTxt = in.readLine()) != null) {//数据以逗号分隔
@@ -86,10 +86,10 @@ public class LoginControllerTest extends BlogApiApplicationTests {
       File inputFile = ResourceUtils.getFile("classpath:unitTest/LoginControllerTest/registerTest.csv");
       File outFile = ResourceUtils.getFile("classpath:unitTest/LoginControllerTest/registerTestRes.csv");
       BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(inputFile),
-              StandardCharsets.UTF_8));
+              "GBK"));
       BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outFile),
-              StandardCharsets.UTF_8));
-      String lineTxt = null;
+              "GBK"));
+      String lineTxt;
       out.write("账号,密码,邮箱,手机号,用户名,预期,输出");
       out.newLine();
       while ((lineTxt = in.readLine()) != null) {//数据以逗号分隔
